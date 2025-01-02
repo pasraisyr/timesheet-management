@@ -1,0 +1,72 @@
+name: pasrasy
+
+services:
+
+  backend:
+    build: ./timesheet
+    restart: always
+    ports:
+      - 8082:8082
+    volumes:
+      - ./timesheet/src:/app/src
+    environment:
+      SPRING_APPLICATION_NAME: Timesheet
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/timesheetdb
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: pasrasy
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+      SERVER_PORT: 8082
+    depends_on:
+      - db
+    networks:
+      - pasrasynetwork
+
+  angular_front:
+    build: ./angular_front
+    restart: always
+    ports:
+      - 4200:4200
+    volumes:
+      - ./angular_front/src:/app/src
+    networks:
+      - pasrasynetwork
+    depends_on:
+      - db
+      - backend
+    command: ng serve --host 0.0.0.0 --poll 100
+
+  db:
+    image: mysql:latest
+    restart: always
+    ports:
+      - 3308:3306
+    networks:
+      - pasrasynetwork
+    volumes:
+      - ./db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: pasrasy
+      MYSQL_DATABASE: timesheetdb
+      MYSQL_USER: pasrasy
+      MYSQL_PASSWORD: pasrasy
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    networks:
+      - pasrasynetwork
+    ports:
+      - 8080:80
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOSTS: db
+      PMA_USER: root
+      PMA_PASSWORD: pasrasy
+
+networks:
+  pasrasynetwork:
+    driver: bridge
+
+volumes:
+  db_data:

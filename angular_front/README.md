@@ -1,0 +1,1 @@
+ng new user-front --routing --skip-tests --minimal
