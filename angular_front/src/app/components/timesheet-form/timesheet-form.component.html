@@ -1,0 +1,42 @@
+<mat-card class="timesheet-card">
+  <mat-card-title class="timesheet-title">Timesheet Form</mat-card-title>
+  <mat-card-content>
+    <form [formGroup]="timesheetForm" class="timesheet-form">
+      <div class="form-group">
+        <label for="project">Project:</label>
+        <input id="project" formControlName="project" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="task">Task:</label>
+        <input id="task" formControlName="task" class="form-control">
+      </div>
+    
+      <div class="form-group date-container">
+        <div>
+          <label for="dateFrom">Date From:</label>
+          <input id="dateFrom" formControlName="dateFrom" type="date" class="form-control">
+        </div>
+        <div>
+          <label for="dateTo">Date To:</label>
+          <input id="dateTo" formControlName="dateTo" type="date" class="form-control">
+        </div>
+      </div>
+     
+      <div class="form-group">
+        <label for="status">Status:</label>
+        <select id="status" formControlName="status" class="form-control">
+          <option *ngFor="let status of status" [value]="status.status">{{ status.status }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="assignTo">Assign To:</label>
+        <select id="assignTo" formControlName="assignTo" class="form-control">
+          <option *ngFor="let user of users" [value]="user.name">{{ user.name }}</option>
+        </select>
+      </div>
+      <div>
+      <button mat-flat-button type="button" (click)="onSubmit()">Submit</button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

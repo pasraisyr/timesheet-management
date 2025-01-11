@@ -1,0 +1,36 @@
+.timesheet-card {
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+.timesheet-title {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.timesheet-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.date-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.date-container > div {
+  flex: 1;
+}
+
+.date-container > div:first-child {
+  margin-right: 8px;
+}
+
+.date-container > div:last-child {
+  margin-left: 8px;
+}
