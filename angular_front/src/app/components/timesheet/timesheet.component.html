@@ -8,42 +8,46 @@
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
   <!-- Project Column -->
   <ng-container matColumnDef="project">
-    <th mat-header-cell *matHeaderCellDef > Project </th>
+    <th mat-header-cell *matHeaderCellDef (click)="sortBy(0)"> Project </th>
     <td mat-cell *matCellDef="let element"> {{element.project}} </td>
   </ng-container>
   <!-- Task Column -->
   <ng-container matColumnDef="task">
-    <th mat-header-cell *matHeaderCellDef > Task </th>
+    <th mat-header-cell *matHeaderCellDef (click)="sortBy(1)"> Task </th>
     <td mat-cell *matCellDef="let element"> {{element.task}} </td>
   </ng-container>
   <!-- Assign To Column -->
   <ng-container matColumnDef="assignTo">
-    <th mat-header-cell *matHeaderCellDef > Assign To </th>
+    <th mat-header-cell *matHeaderCellDef (click)="sortBy(2)"> Assign To </th>
     <td mat-cell *matCellDef="let element"> {{element.assignTo}} </td>
   </ng-container>
   <!-- Date From Column -->
   <ng-container matColumnDef="dateFrom">
-    <th mat-header-cell *matHeaderCellDef > From </th>
+    <th mat-header-cell *matHeaderCellDef (click)="sortBy(3)"> From </th>
     <td mat-cell *matCellDef="let element"> {{element.dateFrom | date:'dd-MM-yyyy'}} </td>
   </ng-container>
   <!-- Date To Column -->
   <ng-container matColumnDef="dateTo">
-    <th mat-header-cell *matHeaderCellDef > To </th>
+    <th mat-header-cell *matHeaderCellDef (click)="sortBy(4)"> To </th>
     <td mat-cell *matCellDef="let element"> {{element.dateTo | date:'dd-MM-yyyy'}} </td>
   </ng-container>
   <!-- Status Column -->
   <ng-container matColumnDef="status">
-    <th mat-header-cell *matHeaderCellDef > Status </th>
+    <th mat-header-cell *matHeaderCellDef (click)="sortBy(5)"> Status </th>
     <td mat-cell *matCellDef="let element"> {{element.status}} </td>
   </ng-container>
   <!-- Actions Column -->
   <ng-container matColumnDef="actions">
-    <th mat-header-cell *matHeaderCellDef > Actions </th>
-    <td mat-cell *matCellDef="let element">
-      <button mat-icon-button (click)="editElement(element)"> <mat-icon>edit</mat-icon> </button>
-      <button mat-icon-button (click)="deleteElement(element)"> <mat-icon>delete</mat-icon> </button>
+    <th mat-header-cell *matHeaderCellDef class="actions-column"></th>
+    <td mat-cell *matCellDef="let element" class="actions-column">
+      <button mat-icon-button (click)="editElement(element)">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button (click)="deleteElement(element)">
+        <mat-icon>delete</mat-icon>
+      </button>
     </td>
-  </ng-container>
+  </ng-container>  
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>

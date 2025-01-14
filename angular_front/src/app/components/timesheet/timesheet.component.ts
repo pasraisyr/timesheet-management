@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { MatTableDataSource } from '@angular/material/table';
 import { ConfirmationDialogComponent } from '../timesheet/confirmation-dialog.component';
 import { EditDialogComponent } from '../timesheet/edit-dialog.component';
@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { TimesheetFormComponent } from '../timesheet-form/timesheet-form.component';
 import { MatButtonModule } from '@angular/material/button';
 import { DatePipe, CommonModule } from '@angular/common';
-
+import { MatPaginator } from '@angular/material/paginator';
 
 
 export interface TimesheetElement {
@@ -35,6 +35,8 @@ export class TimesheetComponent implements OnInit {
   searchQuery: string = '';
   displayedColumns: string[] = ['project', 'task', 'assignTo','dateFrom', 'dateTo', 'status','actions'];
   dataSource = new MatTableDataSource<TimesheetElement>();
+  sortColumns: string[] = ['asc', 'asc', 'asc', 'asc', 'asc', 'asc'];  
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
   
 
 
@@ -100,5 +102,30 @@ export class TimesheetComponent implements OnInit {
     });
   }
   
+  getPageTimeSheet(page: number, sortBy: string, ascending: string): void {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', '10')
+      .set('sortBy', sortBy)
+      .set('ascending', ascending);
+
+    this.http.get<any>('http://localhost:8080/api/timesheets/page', { params }).subscribe(data => {
+      const timesheetData = data.content; 
+      timesheetData.forEach((item: TimesheetElement) => {
+        item.dateFrom = new Date(this.datePipe.transform(item.dateFrom, 'MM-dd-yyyy')!);
+        item.dateTo = new Date(this.datePipe.transform(item.dateTo, 'MM-dd-yyyy')!);
+      });
+      this.dataSource.data = timesheetData;
+      this.dataSource.paginator = this.paginator;
+    });
+  }
+
+  sortBy(arrayLoc: number): void {
+    const sortColumn = this.displayedColumns[arrayLoc];
+    const sortOrder = this.sortColumns[arrayLoc] === 'asc' ? 'false' : 'true';
+    this.sortColumns[arrayLoc] = this.sortColumns[arrayLoc] === 'asc' ? 'desc' : 'asc';
+    this.getPageTimeSheet(0, sortColumn, sortOrder);
+  }
 }
+
 
