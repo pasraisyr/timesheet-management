@@ -9,6 +9,7 @@ import { MatCardModule } from '@angular/material/card';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { MatDialogRef } from '@angular/material/dialog';
 
 /** @title Simple form field */
 @Component({
@@ -25,7 +26,11 @@ export class TimesheetFormComponent implements OnInit {
   users: any[] = [];
   status: any[] = [];
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {}
+  constructor(
+    private fb: FormBuilder, 
+    private http: HttpClient,
+    private dialogRef: MatDialogRef<TimesheetFormComponent> // Inject MatDialogRef
+  ) {}
 
   ngOnInit(): void {
     this.timesheetForm = this.fb.group({
@@ -59,6 +64,11 @@ export class TimesheetFormComponent implements OnInit {
       }, error => {
         console.error('Error fetching status', error);
       });
+  }
+  
+  onClose() {
+    console.log('Form Closed');
+    this.dialogRef.close(); // Close the dialog
   }
 
   onSubmit(): void {

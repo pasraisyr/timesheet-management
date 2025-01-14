@@ -1,8 +1,8 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { MatTableDataSource } from '@angular/material/table';
 import { ConfirmationDialogComponent } from '../timesheet/confirmation-dialog.component';
 import { EditDialogComponent } from '../timesheet/edit-dialog.component';
@@ -33,32 +33,24 @@ export interface TimesheetElement {
 })
 export class TimesheetComponent implements OnInit {
   searchQuery: string = '';
-  displayedColumns: string[] = ['project', 'task', 'dateFrom', 'dateTo', 'status', 'assignTo', 'actions'];
+  displayedColumns: string[] = ['project', 'task', 'assignTo','dateFrom', 'dateTo', 'status','actions'];
   dataSource = new MatTableDataSource<TimesheetElement>();
+  
+
 
   constructor(private http: HttpClient, public dialog: MatDialog, private datePipe: DatePipe) { }
 
   ngOnInit(): void {
-    // No initial data fetching
+    
   }
 
   fetchData(): void {
     this.http.get<TimesheetElement[]>('http://localhost:8080/api/timesheets').subscribe(data => {
-      // Format the date fields using DatePipe
       data.forEach(item => {
         item.dateFrom = new Date(this.datePipe.transform(item.dateFrom, 'MM-dd-yyyy')!);
         item.dateTo = new Date(this.datePipe.transform(item.dateTo, 'MM-dd-yyyy')!);
       });
       this.dataSource.data = data;
-      this.dataSource.filterPredicate = (data: TimesheetElement, filter: string) => {
-        const searchString = filter.trim().toLowerCase();
-        return data.project.toLowerCase().includes(searchString) ||
-               data.task.toLowerCase().includes(searchString) ||
-               this.datePipe.transform(data.dateFrom, 'MM-dd-yyyy')?.includes(searchString) ||
-               this.datePipe.transform(data.dateTo, 'MM-dd-yyyy')?.includes(searchString) ||
-               data.status.toLowerCase().includes(searchString) ||
-               data.assignTo.toLowerCase().includes(searchString);
-      };
     });
   }
 
@@ -70,7 +62,7 @@ export class TimesheetComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.http.delete(`http://localhost:/api/timesheets/${element.id}`).subscribe(() => {
+        this.http.delete(`http://localhost:8080/api/timesheets/${element.id}`).subscribe(() => {
           this.fetchData();
         });
       }
@@ -80,12 +72,12 @@ export class TimesheetComponent implements OnInit {
   applyFilter(filterValue: string): void {
     this.dataSource.filter = filterValue.trim().toLowerCase();
     if (!filterValue) {
-      this.dataSource.filter = ''; 
+      this.dataSource.filter = '';
     }
   }
 
   searchTimesheets(): void {
-    this.fetchData(); 
+    this.fetchData();
     this.applyFilter(this.searchQuery);
   }
 
@@ -107,5 +99,6 @@ export class TimesheetComponent implements OnInit {
       }
     });
   }
-
+  
 }
+

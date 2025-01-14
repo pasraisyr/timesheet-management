@@ -8,9 +8,10 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { HttpClient } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common'; // Import this module
+import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
-
+import { MatButtonModule } from '@angular/material/button';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-edit-dialog',
@@ -24,8 +25,10 @@ import { MatCardModule } from '@angular/material/card';
     MatSelectModule,
     ReactiveFormsModule,
     MatCardModule,
-    CommonModule 
-  ]
+    CommonModule,
+    MatButtonModule
+  ],
+  providers: [DatePipe]
 })
 export class EditDialogComponent implements OnInit {
   editForm: FormGroup;
@@ -36,13 +39,14 @@ export class EditDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<EditDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: TimesheetElement,
     private fb: FormBuilder,
-    private http: HttpClient
+    private http: HttpClient,
+    private datePipe: DatePipe
   ) {
     this.editForm = this.fb.group({
       project: [data.project, Validators.required],
       task: [data.task, Validators.required],
-      dateFrom: [data.dateFrom, Validators.required],
-      dateTo: [data.dateTo, Validators.required],
+      dateFrom: [this.datePipe.transform(data.dateFrom, 'yyyy-MM-dd'), Validators.required],
+      dateTo: [this.datePipe.transform(data.dateTo, 'yyyy-MM-dd'), Validators.required],
       status: [data.status, Validators.required],
       assignTo: [data.assignTo, Validators.required]
     });
@@ -58,6 +62,7 @@ export class EditDialogComponent implements OnInit {
       this.users = users;
     });
   }
+
   fetchStatus(): void {
     this.http.get<any[]>('http://localhost:8080/api/status').subscribe(status => {
       this.status = status;
